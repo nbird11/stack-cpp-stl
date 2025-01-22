@@ -27,91 +27,91 @@ class TestStack; // forward declaration for unit tests
 namespace custom
 {
 
-/**************************************************
- * STACK
- * First-in-Last-out data structure
- *************************************************/
-template<class T, class Container = custom::vector<T>>
-class stack
-{
-   friend class ::TestStack; // give unit tests access to the privates
-public:
-  
-   //
-   // Construct
-   //
-   
-   stack()                       { container.resize(7); }
-   stack(const stack <T> &  rhs) { container.resize(7); }
-   stack(      stack <T> && rhs) { container.resize(7); }
-   stack(const Container &  rhs) { container.resize(7); }
-   stack(      Container && rhs) { container.resize(7); }
-   ~stack()                      {                      }     
-   
-   //
-   // Assign
-   //
-   stack <T> & operator = (const stack <T> & rhs)
+   /**************************************************
+    * STACK
+    * First-in-Last-out data structure
+    *************************************************/
+   template<class T, class Container = custom::vector<T>>
+   class stack
    {
-      return *this;
-   }
-   stack <T>& operator = (stack <T> && rhs)
-   {
-      return *this;
-   }
-   void swap(stack <T>& rhs)
-   {
+      friend class ::TestStack; // give unit tests access to private members
+   public:
 
-   }
+      //
+      // Construct
+      //
 
-   //
-   // Access
-   //
-   
-   T & top()       
-   { 
-      return *(new T); 
-   }
-   const T & top() const 
-   { 
-      return *(new T); 
-   }
+      stack() {}
+      stack(const stack<T>& rhs) : container(rhs.container) {}
+      stack(stack<T>&& rhs) : container(std::move(rhs.container)) {}
+      stack(const Container& rhs) : container(rhs) {}
+      stack(Container&& rhs) : container(std::move(rhs)) {}
+      ~stack() {}
 
-   //
-   // Insert
-   //
-   
-   void push(const T &  t) 
-   {  
-   
-   }
-   void push(      T && t) 
-   {  
-   
-   }
+      //
+      // Assign
+      //
+      stack<T>& operator = (const stack<T>& rhs)
+      {
+         container = rhs.container;
+         return *this;
+      }
+      stack<T>& operator = (stack<T>&& rhs)
+      {
+         container = std::move(rhs.container);
+         return *this;
+      }
+      void swap(stack<T>& rhs)
+      {
+         std::swap(container, rhs.container);
+      }
 
-   //
-   // Remove
-   //
-   
-   void pop() 
-   {  
-   
-   }
+      //
+      // Access
+      //
 
-   //
-   // Status
-   //
-   
-   size_t size () const { return 99;   }
-   bool   empty() const { return true; }
-   
-private:
-   
-   Container container;  // underlying container (probably a vector)
-};
+      T& top()
+      {
+         return container.back();
+      }
+      const T& top() const
+      {
+         return container.back();
+      }
 
+      //
+      // Insert
+      //
 
+      void push(const T& t)
+      {
+         container.push_back(t);
+      }
+      void push(T&& t)
+      {
+         container.push_back(std::move(t));
+      }
+
+      //
+      // Remove
+      //
+
+      void pop()
+      {
+         container.pop_back();
+      }
+
+      //
+      // Status
+      //
+
+      size_t size () const { return container.size(); }
+      bool   empty() const { return container.empty(); }
+
+   private:
+
+      Container container;  // underlying container (probably a vector)
+   };
 
 } // custom namespace
 
